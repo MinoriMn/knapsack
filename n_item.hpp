@@ -13,10 +13,10 @@ class NSItem
 {
 private:
   string name;
-  double weight;
-  double value;
+  float weight;
+  float value;
 public:
-  NSItem(string n, double w, double v);
+  NSItem(string n, float w, float v);
   string toString();
 };
 

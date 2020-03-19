@@ -7,7 +7,7 @@
 using namespace std;
 
 //物品データ
-NSItem::NSItem(string n, double w, double v){
+NSItem::NSItem(string n, float w, float v){
   name = n;
   weight = w;
   value = v;
@@ -43,7 +43,7 @@ vector<NSItem> readItems(){
   while (getline(ifs, line)) {
       vector<string> strvec = splitCsv(line, ',');
 
-      NSItem item(strvec.at(0), stod(strvec.at(1)), stod(strvec.at(2)));
+      NSItem item(strvec.at(0), stof(strvec.at(1)), stof(strvec.at(2)));
       cout << item.toString() << endl;
       items.push_back(item);
   }
