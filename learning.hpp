@@ -1,4 +1,5 @@
 #include <vector>
+#include "n_item.hpp"
 using namespace std;
 
 #ifndef LEARNING
@@ -19,10 +20,10 @@ public:
 //交叉(親クラス)
 class CrossOver{
 public:
-  virtual void cross(vector<gene> parents) = 0;
+  virtual vector<gene> cross(vector<gene> parents) = 0;
 };
 //一点交叉
-class OnePointCrossOver{
+class OnePointCrossOver : public CrossOver{
 private:
   int crossPoint; //分割点index(設定値より後ろの値を入れ替える)
 public:
@@ -36,16 +37,17 @@ class GA{
 private:
   int finGeneration;//終了世代
   int generation;
-  ParentSelect* select;
+  ParentSelect* parentSelect;
   CrossOver* crossOver;
 
+  vector<NSItem> items;
   int parentNum;//親選択数
   vector<gene> population;//個体群
 
-  void init();//初期集団生成
+  void init(int initPopulationNum);//初期集団生成
   void oneGeneration();//1世代の実行
 public:
-  GA(int generation, int initPopulationNum, int parentNum, ParentSelect* parentSelect, CrossOver* crossOver);
+  GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNum, ParentSelect* parentSelect, CrossOver* crossOver);
   void start();
 };
 

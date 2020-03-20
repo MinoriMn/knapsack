@@ -1,8 +1,12 @@
+#include <iostream>
 #include <vector>
 #include <random>
+#include <string>
 #include <algorithm> // std::copy
 #include <iterator> // std::back_inserter
+#include "n_item.hpp"
 #include "learning.hpp"
+#include "utility.hpp"
 using namespace std;
 
 //親選択
@@ -67,4 +71,36 @@ vector<gene> OnePointCrossOver::cross(vector<gene> parents){
   }
 
   return population;
+}
+
+GA::GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNum, ParentSelect* parentSelect, CrossOver* crossOver){
+  this->generation = 0;
+  finGeneration = generation;
+
+  copy(items.begin(), items.end(), back_inserter(this->items) );
+
+  this->parentNum = parentNum;
+  this->parentSelect = parentSelect;
+  this->crossOver = crossOver;
+  init(initPopulationNum);
+}
+//初期集団生成
+void GA::init(int initPopulationNum){
+  cout << "初期集団生成開始-----------------------" << endl;
+  //乱数生成 http://siv3d.hateblo.jp/entry/2013/02/17/231829
+  random_device random;
+  mt19937 mt(random());
+  uniform_int_distribution<int> geneGen(0,1);
+  //遺伝子生成
+  for (int i = 0; i < initPopulationNum; i++) {
+    gene individual;
+    for (int j = 0; j < items.size(); j++) {
+      individual.push_back(geneGen(mt));
+    }
+    population.push_back(individual);
+    string s = vecIntToString(individual);
+    cout << s << endl;
+  }
+
+  cout << "初期集団生成終了-----------------------" << endl;
 }
