@@ -118,6 +118,7 @@ void GA::oneGeneration(int gen){
   vector<pair<gene,float> > populationAndEv = evaluate();//評価
   vector<gene> parents = parentSelect->select(populationAndEv, parentNum);//親選択
   vector<gene> children = crossOver->cross(parents);//子生成
+  mutation(children);//突然変異
 
   copy(parents.begin(), parents.end(), back_inserter(children));
   population = children;
@@ -154,7 +155,9 @@ void GA::mutation(vector<gene> population){
     gene g = population.at(i);
     for (int j = 0; j < g.size(); j++) {
       if(p(mt) < mutationRate){
+        // cout << "突然変異発生" << vecIntToString(g);
         g[j] = (g[j] + 1) % 2;//ビット反転
+        // cout << " > " << vecIntToString(g) << endl;
       }
     }
   }
