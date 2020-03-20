@@ -17,6 +17,10 @@ private:
   float value;
 public:
   NSItem(string n, float w, float v);
+  string getName();
+  float getWeight();
+  float getValue();
+
   string toString();
 };
 

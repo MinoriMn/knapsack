@@ -12,6 +12,15 @@ NSItem::NSItem(string n, float w, float v){
   weight = w;
   value = v;
 }
+string NSItem::getName(){
+  return name;
+}
+float NSItem::getWeight(){
+  return weight;
+}
+float NSItem::getValue(){
+  return value;
+}
 string NSItem::toString(){
   string s = name + " w:" + to_string(weight) + " v:" + to_string(value);
   return s;
