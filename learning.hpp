@@ -7,6 +7,23 @@ using namespace std;
 #define LEARNING
 
 typedef vector<int> gene;//遺伝子配列
+
+//各世代の記録
+class GenerationRecord
+{
+private:
+  vector<pair<gene,float> > population;
+  int maxIdx;
+  float maxEv;//最大値
+  float aveEv;//平均
+  float aveEvNotOne;//平均(評価1を除く)
+public:
+  GenerationRecord(vector<pair<gene,float> > population, int maxIdx, float maxEv, float aveEv, float aveEvNotOne);
+  int getMaxidx();
+  float getMaxEv();
+  float getAveEv();
+  float getAveEvNotOne();
+};
 //親選択方法(親クラス)
 class ParentSelect{
 public:
@@ -50,19 +67,17 @@ private:
 
   float mutationRate;//突然変異確率
 
-  matplotlib plot;//グラフ描画
-  float preMaxEv;
-  float preAveEv;
-  float preAveEvNotOne;
+  vector<GenerationRecord> record;
 
   void init(int initPopulationNum);//初期集団生成
   void oneGeneration(int gen);//1世代の実行
   vector<pair<gene,float> > evaluate();//評価
   void mutation(vector<gene> population);//突然変異
-  void updateGraph(vector<pair<gene,float> > population);//グラフの更新
+  GenerationRecord makeRecord(vector<pair<gene,float> > population);//世代の記録
 public:
   GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNum, float weightThreshold, ParentSelect* parentSelect, CrossOver* crossOver, float mutationRate);
   void start();
+  vector<GenerationRecord> getGenerationRecord();
 };
 
 
