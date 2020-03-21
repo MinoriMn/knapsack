@@ -7,6 +7,7 @@
 #include "n_item.hpp"
 #include "learning.hpp"
 #include "utility.hpp"
+#include "matplotlib.hpp"
 using namespace std;
 
 //親選択
@@ -84,6 +85,13 @@ GA::GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNu
   this->crossOver = crossOver;
   this->mutationRate = mutationRate;
   init(initPopulationNum);
+
+  g.open();
+	// set drawing range
+	g.screen(-5, 0, finGeneration + 5, 5000);
+  preMaxEv = 1;
+  preAveEv = 1;
+  preAveEvNotOne = 1;
 }
 //初期集団生成
 void GA::init(int initPopulationNum){
@@ -111,11 +119,16 @@ void GA::start(){
   for (int i = 0; i < finGeneration; i++) {
     oneGeneration(i);
   }
+  g.save("test.pdf");
+  getchar();
+  // finish drawing
+  g.close();
 }
 //一世代実行
 void GA::oneGeneration(int gen){
   cout << "第" << gen << "世代開始-----------------------" << endl;
   vector<pair<gene,float> > populationAndEv = evaluate();//評価
+  updateGraph(populationAndEv);
   vector<gene> parents = parentSelect->select(populationAndEv, parentNum);//親選択
   vector<gene> children = crossOver->cross(parents);//子生成
   mutation(children);//突然変異
@@ -161,4 +174,33 @@ void GA::mutation(vector<gene> population){
       }
     }
   }
+}
+//グラフの更新
+void GA::updateGraph(vector<pair<gene,float> > population){
+  int maxIdx = 0; float maxEv = 1;//最大値
+  float aveEv = 0;//平均
+  int numEvNotOne = 0; float aveEvNotOne = 0;//平均(評価1を除く)
+
+  for (int i = 0; i < population.size(); i++) {
+    float ev = population[i].second;
+    if(maxEv < ev){
+      maxIdx = i;
+      maxEv = ev;
+    }
+    aveEv += ev;
+    if(ev > 1){
+      numEvNotOne++;
+      aveEvNotOne += ev;
+    }
+  }
+  aveEv /= (float)population.size();
+  if(numEvNotOne != 0)aveEvNotOne /= (float)numEvNotOne;
+
+  g.line(generation - 1, preAveEv, generation, aveEv, "green");
+  g.line(generation - 1, preAveEvNotOne, generation, aveEvNotOne, "red");
+  g.line(generation - 1, preMaxEv, generation, maxEv);
+
+  preMaxEv = maxEv;
+  preAveEv = aveEv;
+  preAveEvNotOne = aveEvNotOne;
 }
