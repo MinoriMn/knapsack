@@ -36,7 +36,7 @@ vector<gene> Roulette::select(vector<pair<gene,float> >  population, int parentN
     for (int j = 0; j < dPopulation.size(); j++) {
       individual = dPopulation.at(j);
       thresholdEv += individual.second;
-      if(genEv <= thresholdEv){
+      if(genEv < thresholdEv){
         parents.push_back(individual.first);
         evSum -= individual.second;
         dPopulation.erase(dPopulation.begin() + j);
@@ -130,12 +130,13 @@ vector<pair<gene,float> > GA::evaluate(){
   for (int i = 0; i < population.size(); i++) {
     gene g = population[i];
     float weight = 0;
-    float ev = 0;
+    float ev = 1;
     for (int j = 0; j < g.size(); j++) {
       weight += items[j].getWeight() * g[j];
       ev += items[j].getValue() * g[j];
       if(weight > weightThreshold){
-        ev = 0;
+        ev = 1;
+        break;
       }
     }
     pair<gene,float> p = make_pair(g, ev);
