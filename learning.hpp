@@ -1,5 +1,6 @@
 #include <vector>
 #include "n_item.hpp"
+#include "matplotlib.hpp"
 using namespace std;
 
 #ifndef LEARNING
@@ -39,7 +40,7 @@ private:
   int generation;
 
   float weightThreshold;//重さの閾値
-  
+
   ParentSelect* parentSelect;
   CrossOver* crossOver;
 
@@ -49,10 +50,16 @@ private:
 
   float mutationRate;//突然変異確率
 
+  matplotlib plot;//グラフ描画
+  float preMaxEv;
+  float preAveEv;
+  float preAveEvNotOne;
+
   void init(int initPopulationNum);//初期集団生成
   void oneGeneration(int gen);//1世代の実行
   vector<pair<gene,float> > evaluate();//評価
   void mutation(vector<gene> population);//突然変異
+  void updateGraph(vector<pair<gene,float> > population);//グラフの更新
 public:
   GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNum, float weightThreshold, ParentSelect* parentSelect, CrossOver* crossOver, float mutationRate);
   void start();
