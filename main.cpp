@@ -5,6 +5,8 @@
 #include "matplotlib.hpp"
 using namespace std;
 
+#define GA_GRAPH_FILE_NAME "ga_result_graph.pdf"
+
 // 学習結果書き出し
 void writeGAData(vector<NSItem> items, GA ga){
   matplotlib plot;
@@ -13,7 +15,7 @@ void writeGAData(vector<NSItem> items, GA ga){
 
   plot.open();
   // set drawing range
-  plot.screen(-5, 0, generation + 5, 5000);
+  plot.screen(-5, 0, generation + 5, 8000);
 
   float preAveEv = 1;
   float preAveEvNotOne = 0;
@@ -33,7 +35,7 @@ void writeGAData(vector<NSItem> items, GA ga){
     preMaxEv = maxEv;
   }
 
-  plot.save("test.pdf");
+  plot.save(GA_GRAPH_FILE_NAME);
   getchar();
   // finish drawing
   plot.close();
@@ -45,7 +47,7 @@ GA runGA(int generation, vector<NSItem> items, int initPopulationNum, int parent
   //交叉方法
   OnePointCrossOver onePointCrossOver(3);
   //突然変異確率
-  float mutationRate = 0.1;
+  float mutationRate = 0.2;
   //GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNum, float weightThreshold, ParentSelect* parentSelect, CrossOver* crossOver, float mutationRate)
   GA ga(generation, items, initPopulationNum, parentNum, weightThreshold, dynamic_cast<Roulette*>(&roulette), dynamic_cast<OnePointCrossOver*>(&onePointCrossOver), mutationRate);
   ga.start();
@@ -53,7 +55,8 @@ GA runGA(int generation, vector<NSItem> items, int initPopulationNum, int parent
   return ga;
 }
 
-int main(){
+//(グラフ書き出しファイル名)
+int main(int argc, char *argv[]){
   //物品読み込み
   vector<NSItem> items = readItems();
   cout << "物品サイズ: " << items.size() << endl;
