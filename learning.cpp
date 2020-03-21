@@ -10,6 +10,27 @@
 #include "matplotlib.hpp"
 using namespace std;
 
+//各世代の記録
+GenerationRecord::GenerationRecord(vector<pair<gene,float> > population, int maxIdx, float maxEv, float aveEv, float aveEvNotOne){
+  this->population = population;
+  this->maxIdx = maxIdx;
+  this->maxEv = maxEv;
+  this->aveEv = aveEv;
+  this->aveEvNotOne = aveEvNotOne;
+}
+int GenerationRecord::getMaxidx(){
+  return maxIdx;
+}
+float GenerationRecord::getMaxEv(){
+  return maxEv;
+}
+float GenerationRecord::getAveEv(){
+  return aveEv;
+}
+float GenerationRecord::getAveEvNotOne(){
+  return aveEvNotOne;
+}
+
 //親選択
 //ルーレット方式
 vector<gene> Roulette::select(vector<pair<gene,float> >  population, int parentNum){
@@ -37,7 +58,7 @@ vector<gene> Roulette::select(vector<pair<gene,float> >  population, int parentN
     for (int j = 0; j < dPopulation.size(); j++) {
       individual = dPopulation.at(j);
       thresholdEv += individual.second;
-      if(genEv <= thresholdEv){
+      if(genEv < thresholdEv){
         parents.push_back(individual.first);
         evSum -= individual.second;
         dPopulation.erase(dPopulation.begin() + j);
@@ -86,12 +107,9 @@ GA::GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNu
   this->mutationRate = mutationRate;
   init(initPopulationNum);
 
-  plot.open();
+  // plot.open();
 	// set drawing range
-	plot.screen(-5, 0, finGeneration + 5, 5000);
-  preMaxEv = 1;
-  preAveEv = 1;
-  preAveEvNotOne = 1;
+	// plot.screen(-5, 0, finGeneration + 5, 5000);
 }
 //初期集団生成
 void GA::init(int initPopulationNum){
@@ -119,16 +137,16 @@ void GA::start(){
   for (int i = 0; i < finGeneration; i++) {
     oneGeneration(i);
   }
-  plot.save("test.pdf");
-  getchar();
+  // plot.save("test.pdf");
+  // getchar();
   // finish drawing
-  plot.close();
+  // plot.close();
 }
 //一世代実行
 void GA::oneGeneration(int gen){
   cout << "第" << gen << "世代開始-----------------------" << endl;
   vector<pair<gene,float> > populationAndEv = evaluate();//評価
-  updateGraph(populationAndEv);
+  record.push_back(makeRecord(populationAndEv));
   vector<gene> parents = parentSelect->select(populationAndEv, parentNum);//親選択
   vector<gene> children = crossOver->cross(parents);//子生成
   mutation(children);//突然変異
@@ -143,12 +161,13 @@ vector<pair<gene,float> > GA::evaluate(){
   for (int i = 0; i < population.size(); i++) {
     gene g = population[i];
     float weight = 0;
-    float ev = 0;
+    float ev = 1;
     for (int j = 0; j < g.size(); j++) {
       weight += items[j].getWeight() * g[j];
       ev += items[j].getValue() * g[j];
       if(weight > weightThreshold){
-        ev = 0;
+        ev = 1;
+        break;
       }
     }
     pair<gene,float> p = make_pair(g, ev);
@@ -176,7 +195,7 @@ void GA::mutation(vector<gene> population){
   }
 }
 //グラフの更新
-void GA::updateGraph(vector<pair<gene,float> > population){
+GenerationRecord GA::makeRecord(vector<pair<gene,float> > population){
   int maxIdx = 0; float maxEv = 1;//最大値
   float aveEv = 0;//平均
   int numEvNotOne = 0; float aveEvNotOne = 0;//平均(評価1を除く)
@@ -196,11 +215,13 @@ void GA::updateGraph(vector<pair<gene,float> > population){
   aveEv /= (float)population.size();
   if(numEvNotOne != 0)aveEvNotOne /= (float)numEvNotOne;
 
-  plot.line(generation - 1, preAveEv, generation, aveEv, "green");
-  plot.line(generation - 1, preAveEvNotOne, generation, aveEvNotOne, "red");
-  plot.line(generation - 1, preMaxEv, generation, maxEv);
+  // plot.line(generation - 1, preAveEv, generation, aveEv, "green");
+  // plot.line(generation - 1, preAveEvNotOne, generation, aveEvNotOne, "red");
+  // plot.line(generation - 1, preMaxEv, generation, maxEv);
 
-  preMaxEv = maxEv;
-  preAveEv = aveEv;
-  preAveEvNotOne = aveEvNotOne;
+  GenerationRecord generationRecord(population, maxIdx, maxEv, aveEv, aveEvNotOne);
+  return generationRecord;
+}
+vector<GenerationRecord> GA::getGenerationRecord(){
+  return record;
 }
