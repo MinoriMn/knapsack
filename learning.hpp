@@ -1,6 +1,5 @@
 #include <vector>
 #include "n_item.hpp"
-#include "matplotlib.hpp"
 using namespace std;
 
 #ifndef LEARNING

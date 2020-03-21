@@ -7,7 +7,6 @@
 #include "n_item.hpp"
 #include "learning.hpp"
 #include "utility.hpp"
-#include "matplotlib.hpp"
 using namespace std;
 
 //各世代の記録
@@ -106,10 +105,6 @@ GA::GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNu
   this->crossOver = crossOver;
   this->mutationRate = mutationRate;
   init(initPopulationNum);
-
-  // plot.open();
-	// set drawing range
-	// plot.screen(-5, 0, finGeneration + 5, 5000);
 }
 //初期集団生成
 void GA::init(int initPopulationNum){
@@ -137,10 +132,6 @@ void GA::start(){
   for (int i = 0; i < finGeneration; i++) {
     oneGeneration(i);
   }
-  // plot.save("test.pdf");
-  // getchar();
-  // finish drawing
-  // plot.close();
 }
 //一世代実行
 void GA::oneGeneration(int gen){
@@ -214,10 +205,6 @@ GenerationRecord GA::makeRecord(vector<pair<gene,float> > population){
   }
   aveEv /= (float)population.size();
   if(numEvNotOne != 0)aveEvNotOne /= (float)numEvNotOne;
-
-  // plot.line(generation - 1, preAveEv, generation, aveEv, "green");
-  // plot.line(generation - 1, preAveEvNotOne, generation, aveEvNotOne, "red");
-  // plot.line(generation - 1, preMaxEv, generation, maxEv);
 
   GenerationRecord generationRecord(population, maxIdx, maxEv, aveEv, aveEvNotOne);
   return generationRecord;
