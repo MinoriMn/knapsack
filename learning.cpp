@@ -86,9 +86,9 @@ GA::GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNu
   this->mutationRate = mutationRate;
   init(initPopulationNum);
 
-  g.open();
+  plot.open();
 	// set drawing range
-	g.screen(-5, 0, finGeneration + 5, 5000);
+	plot.screen(-5, 0, finGeneration + 5, 5000);
   preMaxEv = 1;
   preAveEv = 1;
   preAveEvNotOne = 1;
@@ -119,10 +119,10 @@ void GA::start(){
   for (int i = 0; i < finGeneration; i++) {
     oneGeneration(i);
   }
-  g.save("test.pdf");
+  plot.save("test.pdf");
   getchar();
   // finish drawing
-  g.close();
+  plot.close();
 }
 //一世代実行
 void GA::oneGeneration(int gen){
@@ -196,9 +196,9 @@ void GA::updateGraph(vector<pair<gene,float> > population){
   aveEv /= (float)population.size();
   if(numEvNotOne != 0)aveEvNotOne /= (float)numEvNotOne;
 
-  g.line(generation - 1, preAveEv, generation, aveEv, "green");
-  g.line(generation - 1, preAveEvNotOne, generation, aveEvNotOne, "red");
-  g.line(generation - 1, preMaxEv, generation, maxEv);
+  plot.line(generation - 1, preAveEv, generation, aveEv, "green");
+  plot.line(generation - 1, preAveEvNotOne, generation, aveEvNotOne, "red");
+  plot.line(generation - 1, preMaxEv, generation, maxEv);
 
   preMaxEv = maxEv;
   preAveEv = aveEv;
