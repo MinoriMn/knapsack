@@ -15,7 +15,7 @@ void readyLearningData(vector<NSItem> items){
     initPopulationNum = initPopulationNum * i;
   };
   initPopulationNum += parentNum;
-  float weightThreshold = 300;
+  float weightThreshold = 400;
   //親選択方法
   Roulette roulette;
   //交叉方法
