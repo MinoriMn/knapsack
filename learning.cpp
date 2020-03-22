@@ -140,7 +140,7 @@ void GA::oneGeneration(int gen){
   record.push_back(makeRecord(populationAndEv));
   vector<gene> parents = parentSelect->select(populationAndEv, parentNum);//親選択
   vector<gene> children = crossOver->cross(parents);//子生成
-  mutation(children);//突然変異
+  children = mutation(children);//突然変異
 
   copy(parents.begin(), parents.end(), back_inserter(children));
   population = children;
@@ -169,13 +169,13 @@ vector<pair<gene,float> > GA::evaluate(){
   return populationAndEv;
 }
 //突然変異
-void GA::mutation(vector<gene> population){
+vector<gene> GA::mutation(vector<gene> population){
   //乱数生成 http://siv3d.hateblo.jp/entry/2013/02/17/231829
   random_device random;
   mt19937 mt(random());
   uniform_real_distribution<float> p(0.0,1.0);
   for (int i = 0; i < population.size(); i++) {
-    gene g = population.at(i);
+    gene g = population[i];
     for (int j = 0; j < g.size(); j++) {
       if(p(mt) < mutationRate){
         // cout << "突然変異発生" << vecIntToString(g);
@@ -183,7 +183,10 @@ void GA::mutation(vector<gene> population){
         // cout << " > " << vecIntToString(g) << endl;
       }
     }
+    population[i] = g;
   }
+
+  return population;
 }
 //グラフの更新
 GenerationRecord GA::makeRecord(vector<pair<gene,float> > population){
