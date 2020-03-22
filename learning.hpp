@@ -71,7 +71,7 @@ private:
   void init(int initPopulationNum);//初期集団生成
   void oneGeneration(int gen);//1世代の実行
   vector<pair<gene,float> > evaluate();//評価
-  void mutation(vector<gene> population);//突然変異
+  vector<gene> mutation(vector<gene> population);//突然変異
   GenerationRecord makeRecord(vector<pair<gene,float> > population);//世代の記録
 public:
   GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNum, float weightThreshold, ParentSelect* parentSelect, CrossOver* crossOver, float mutationRate);
