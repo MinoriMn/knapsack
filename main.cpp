@@ -97,7 +97,7 @@ int main(int argc, char *argv[]){
   vector<NSItem> items = readItems();
   cout << "物品サイズ: " << items.size() << endl;
   int parentNum = 1 + 3;
-  int generation = 10;
+  int generation = 1000;
   int initPopulationNum = 1;
   for(int i = 1; i <= parentNum; ++i) {
     initPopulationNum = initPopulationNum * i;
