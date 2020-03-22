@@ -45,9 +45,9 @@ GA runGA(int generation, vector<NSItem> items, int initPopulationNum, int parent
   //親選択方法
   Roulette roulette;
   //交叉方法
-  OnePointCrossOver onePointCrossOver(3);
+  OnePointCrossOver onePointCrossOver(items.size()/2);
   //突然変異確率
-  float mutationRate = 0.2;
+  float mutationRate = 0.05;
   //GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNum, float weightThreshold, ParentSelect* parentSelect, CrossOver* crossOver, float mutationRate)
   GA ga(generation, items, initPopulationNum, parentNum, weightThreshold, dynamic_cast<Roulette*>(&roulette), dynamic_cast<OnePointCrossOver*>(&onePointCrossOver), mutationRate);
   ga.start();
@@ -61,7 +61,7 @@ int main(int argc, char *argv[]){
   vector<NSItem> items = readItems();
   cout << "物品サイズ: " << items.size() << endl;
 
-  int generation = 10;
+  int generation = 1000;
   int parentNum = 3;
   int initPopulationNum = 1;
   for(int i = 1; i <= parentNum; ++i) {
