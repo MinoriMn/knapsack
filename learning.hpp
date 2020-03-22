@@ -18,6 +18,7 @@ private:
   float aveEvNotOne;//平均(評価1を除く)
 public:
   GenerationRecord(vector<pair<gene,float> > population, int maxIdx, float maxEv, float aveEv, float aveEvNotOne);
+  vector<pair<gene,float> > getPopulationAndEv();
   int getMaxidx();
   float getMaxEv();
   float getAveEv();

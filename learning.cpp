@@ -17,6 +17,9 @@ GenerationRecord::GenerationRecord(vector<pair<gene,float> > population, int max
   this->aveEv = aveEv;
   this->aveEvNotOne = aveEvNotOne;
 }
+vector<pair<gene,float> > GenerationRecord::getPopulationAndEv(){
+  return population;
+}
 int GenerationRecord::getMaxidx(){
   return maxIdx;
 }
