@@ -26,17 +26,21 @@ public:
 //親選択方法(親クラス)
 class ParentSelect{
 public:
-  virtual vector<gene> select(vector<pair<gene,float> > population, int parentNum) = 0;
+  int parentNum;
+  ParentSelect(int parentNum);
+  virtual vector<gene> select(vector<pair<gene,float> > population) = 0;
 };
 //ルーレット選択
 class Roulette : public ParentSelect{
 public:
-  virtual vector<gene> select(vector<pair<gene,float> > population, int parentNum);
+  Roulette(int parentNum):ParentSelect(parentNum){}
+  virtual vector<gene> select(vector<pair<gene,float> > population);
 };
 //エリート選択
 class Elite : public ParentSelect{
 public:
-  virtual vector<gene> select(vector<pair<gene,float> > population, int parentNum);
+  Elite(int parentNum):ParentSelect(parentNum){}
+  virtual vector<gene> select(vector<pair<gene,float> > population);
 };
 
 //交叉(親クラス)
@@ -62,11 +66,10 @@ private:
 
   float weightThreshold;//重さの閾値
 
-  ParentSelect* parentSelect;
+  vector<ParentSelect*> parentSelects;
   CrossOver* crossOver;
 
   vector<NSItem> items;
-  int parentNum;//親選択数
   vector<gene> population;//個体群
 
   float mutationRate;//突然変異確率
@@ -79,7 +82,7 @@ private:
   vector<gene> mutation(vector<gene> population);//突然変異
   GenerationRecord makeRecord(vector<pair<gene,float> > population);//世代の記録
 public:
-  GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNum, float weightThreshold, ParentSelect* parentSelect, CrossOver* crossOver, float mutationRate);
+  GA(int generation, vector<NSItem> items, int initPopulationNum, float weightThreshold, vector<ParentSelect*> parentSelects, CrossOver* crossOver, float mutationRate);
   void start();
   vector<GenerationRecord> getGenerationRecord();
 };

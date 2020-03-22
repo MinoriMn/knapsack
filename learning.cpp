@@ -31,8 +31,11 @@ float GenerationRecord::getAveEvNotOne(){
 }
 
 //親選択
+ParentSelect::ParentSelect(int parentNum){
+  this->parentNum = parentNum;
+}
 //ルーレット方式
-vector<gene> Roulette::select(vector<pair<gene,float> >  population, int parentNum){
+vector<gene> Roulette::select(vector<pair<gene,float> >  population){
   float evSum = 0;//評価値合計
   int idx = 0;
 
@@ -69,7 +72,7 @@ vector<gene> Roulette::select(vector<pair<gene,float> >  population, int parentN
   return parents;
 }
 //エリート選択
-vector<gene> Elite::select(vector<pair<gene,float> >  population, int parentNum){
+vector<gene> Elite::select(vector<pair<gene,float> >  population){
   vector<gene> parents;
   vector<pair<gene,float> > dPopulation;
   copy(population.begin(), population.end(), back_inserter(dPopulation));
@@ -109,15 +112,14 @@ vector<gene> OnePointCrossOver::cross(vector<gene> parents){
   return children;
 }
 
-GA::GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNum, float weightThreshold, ParentSelect* parentSelect, CrossOver* crossOver, float mutationRate){
+GA::GA(int generation, vector<NSItem> items, int initPopulationNum, float weightThreshold, vector<ParentSelect*> parentSelects, CrossOver* crossOver, float mutationRate){
   this->generation = 0;
   finGeneration = generation;
 
   copy(items.begin(), items.end(), back_inserter(this->items) );
 
-  this->parentNum = parentNum;
   this->weightThreshold = weightThreshold;
-  this->parentSelect = parentSelect;
+  this->parentSelects = parentSelects;
   this->crossOver = crossOver;
   this->mutationRate = mutationRate;
   init(initPopulationNum);
@@ -153,8 +155,12 @@ void GA::start(){
 void GA::oneGeneration(int gen){
   cout << "第" << gen << "世代開始-----------------------" << endl;
   vector<pair<gene,float> > populationAndEv = evaluate();//評価
-  record.push_back(makeRecord(populationAndEv));
-  vector<gene> parents = parentSelect->select(populationAndEv, parentNum);//親選択
+  record.push_back(makeRecord(populationAndEv));//記録生成
+  vector<gene> parents;
+  for (int i = 0; i < parentSelects.size(); i++) {//親選択
+    vector<gene> selectRst = parentSelects[i]->select(populationAndEv);
+    copy(selectRst.begin(), selectRst.end(), back_inserter(parents));
+  }
   vector<gene> children = crossOver->cross(parents);//子生成
   children = mutation(children);//突然変異
 
