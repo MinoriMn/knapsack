@@ -33,6 +33,11 @@ class Roulette : public ParentSelect{
 public:
   virtual vector<gene> select(vector<pair<gene,float> > population, int parentNum);
 };
+//エリート選択
+class Elite : public ParentSelect{
+public:
+  virtual vector<gene> select(vector<pair<gene,float> > population, int parentNum);
+};
 
 //交叉(親クラス)
 class CrossOver{

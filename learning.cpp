@@ -44,7 +44,7 @@ vector<gene> Roulette::select(vector<pair<gene,float> >  population, int parentN
   //ルーレット部
   vector<gene> parents;
   vector<pair<gene,float> >  dPopulation;
-  copy(population.begin(), population.end(), back_inserter(dPopulation) );
+  copy(population.begin(), population.end(), back_inserter(dPopulation));
   //乱数生成 http://siv3d.hateblo.jp/entry/2013/02/17/231829
   random_device random;
   mt19937 mt(random());
@@ -66,6 +66,22 @@ vector<gene> Roulette::select(vector<pair<gene,float> >  population, int parentN
     }
   }
 
+  return parents;
+}
+//エリート選択
+vector<gene> Elite::select(vector<pair<gene,float> >  population, int parentNum){
+  vector<gene> parents;
+  vector<pair<gene,float> > dPopulation;
+  copy(population.begin(), population.end(), back_inserter(dPopulation));
+
+
+  sort(dPopulation.begin(), dPopulation.end(), [](const pair<gene,float>& a, const pair<gene,float>& b) {
+    return a.second < b.second;
+  });//評価値で昇順でソート
+
+  for (int i = 1; i <= parentNum; i++) {
+    parents.push_back(dPopulation[dPopulation.size() - i].first);
+  }
   return parents;
 }
 

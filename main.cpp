@@ -13,13 +13,15 @@ void writeGAData(vector<NSItem> items, GA ga){
   vector<GenerationRecord> generationRecords = ga.getGenerationRecord();
   int generation = generationRecords.size();
 
+  cout << "グラフ書き出し開始-----------------------" << endl;
   plot.open();
   // set drawing range
-  plot.screen(-5, 0, generation + 5, 8000);
+  plot.screen(-5, 0, generation + 5, 8000, true);
 
   float preAveEv = 1;
   float preAveEvNotOne = 0;
   float preMaxEv = 1;
+
   for (int g = 0; g < generation; g++) {
     GenerationRecord record = generationRecords[g];
     float aveEv = record.getAveEv();
@@ -34,22 +36,25 @@ void writeGAData(vector<NSItem> items, GA ga){
     preAveEvNotOne = aveEvNotOne;
     preMaxEv = maxEv;
   }
+  cout << endl;
 
   plot.save(GA_GRAPH_FILE_NAME);
-  getchar();
+  // getchar();
   // finish drawing
   plot.close();
+  cout << "グラフ書き出し終了----------------------" << endl;
 }
 
 GA runGA(int generation, vector<NSItem> items, int initPopulationNum, int parentNum, float weightThreshold){
   //親選択方法
-  Roulette roulette;
+  // Roulette roulette;
+  Elite elite;
   //交叉方法
   OnePointCrossOver onePointCrossOver(items.size()/2);
   //突然変異確率
   float mutationRate = 0.05;
   //GA(int generation, vector<NSItem> items, int initPopulationNum, int parentNum, float weightThreshold, ParentSelect* parentSelect, CrossOver* crossOver, float mutationRate)
-  GA ga(generation, items, initPopulationNum, parentNum, weightThreshold, dynamic_cast<Roulette*>(&roulette), dynamic_cast<OnePointCrossOver*>(&onePointCrossOver), mutationRate);
+  GA ga(generation, items, initPopulationNum, parentNum, weightThreshold, dynamic_cast<ParentSelect*>(&elite), dynamic_cast<CrossOver*>(&onePointCrossOver), mutationRate);
   ga.start();
 
   return ga;
